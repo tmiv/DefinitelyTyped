@@ -29,7 +29,6 @@ declare namespace kurento {
 
     interface ClientInstance {
         create(type: 'MediaPipeline'): Promise<MediaPipeline>;
-        create(type: 'WebRtcEndpoint'): Promise<WebRtcEndpoint>;
         create(type: 'RecorderEndpoint', options: RecorderEndpointOptions): Promise<RecorderEndpoint>;
         on(event: 'OnIceCandidate', callback: (event: IceCandidate) => void): void;
         on(event: 'Error', callback: (error: Error) => void): void;
@@ -74,6 +73,8 @@ declare namespace kurento {
     }
 
     interface MediaPipeline extends ClientInstance, MediaObject {
+        create(type: 'WebRtcEndpoint'): Promise<WebRtcEndpoint>;
+        create(type: 'AlphaBlending'): Promise<AlphaBlending>;
         getGstreamerDot: (callback?: Callback<string>) => Promise<string>;
         getLatencyStats: (callback?: Callback<boolean>) => Promise<boolean>;
         setLatencyStats: (callback?: Callback<string>) => Promise<string>;
@@ -90,7 +91,15 @@ declare namespace kurento {
         setMinOutputBitrate: (bitrate: number, callback?: Callback<number>) => Promise<number>;
     }
 
-    interface WebRtcEndpoint extends ClientInstance, MediaObject, MediaElement {
+    interface SdpEndpoint {
+        generateOffer: () => Promise<string>;
+        getLocalSessionDescriptor: () => Promise<string>;
+        getRemoteSessionDescriptor: () => Promise<string>;
+        processAnswer: (answer: string) => Promise<string>;
+        processOffer: (offer: string, callback?: Callback<string>) => Promise<string>;
+    }
+
+    interface WebRtcEndpoint extends ClientInstance, MediaObject, MediaElement, SdpEndpoint {
         addIceCandidate: (candidate: RTCIceCandidate, callback?: Callback<void>) => Promise<void>;
         closeDataChannel: (channelId: number, callback?: Callback<void>) => Promise<void>;
         createDataChannel: (
@@ -126,7 +135,6 @@ declare namespace kurento {
         getStunServerPort: (callback?: Callback<number>) => Promise<number>;
         setTurnUrl: (url: string, callback?: Callback<void>) => Promise<void>;
         getTurnUrl: (callback?: Callback<string>) => Promise<string>;
-        processOffer: (offer: string, callback?: Callback<string>) => Promise<string>;
     }
 
     interface ElementConnectionData {
@@ -161,6 +169,18 @@ declare namespace kurento {
     }
 
     type Callback<T> = (error: Error, result: T) => void;
+}
+
+export interface HubPort extends MediaElement {
+    id : string;
+}
+
+export interface Hub extends MediaObject {
+    createHubPort() : Promise<HubPort>;
+}
+
+export interface AlphaBlending extends Hub {
+    setMaster(port:string, zOrder:int) : Promise<void>;
 }
 
 declare const kurento: kurento.Constructor;
