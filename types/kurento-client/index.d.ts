@@ -30,7 +30,9 @@ declare namespace kurento {
     interface ClientInstance {
         create(type: 'MediaPipeline'): Promise<MediaPipeline>;
         create(type: 'RecorderEndpoint', options: RecorderEndpointOptions): Promise<RecorderEndpoint>;
-        on(event: 'OnIceCandidate', callback: (event: IceCandidate) => void): void;
+        create(type: 'WebRtcEndpoint'): Promise<WebRtcEndpoint>;
+        create(type: 'AlphaBlending'): Promise<AlphaBlending>;
+        on(event: 'OnIceCandidate', callback: (event: IceCandidateEvent) => void): void;
         on(event: 'Error', callback: (error: Error) => void): void;
         on(event: 'Recording' | 'Paused' | 'Stopped', callback: () => void): void;
         getMediaobjectById(objectId: string): Promise<MediaPipeline | WebRtcEndpoint | RecorderEndpoint>;
@@ -73,8 +75,6 @@ declare namespace kurento {
     }
 
     interface MediaPipeline extends ClientInstance, MediaObject {
-        create(type: 'WebRtcEndpoint'): Promise<WebRtcEndpoint>;
-        create(type: 'AlphaBlending'): Promise<AlphaBlending>;
         getGstreamerDot: (callback?: Callback<string>) => Promise<string>;
         getLatencyStats: (callback?: Callback<boolean>) => Promise<boolean>;
         setLatencyStats: (callback?: Callback<string>) => Promise<string>;
@@ -168,19 +168,27 @@ declare namespace kurento {
         sdpMLineIndex: number;
     }
 
+    interface IceCandidateEvent {
+        candidate : IceCandidate;
+        source: string;
+        timestamp:  string;
+        timestampMillis: string;
+        type: string; 
+    }
+
     type Callback<T> = (error: Error, result: T) => void;
-}
 
-export interface HubPort extends MediaElement {
-    id : string;
-}
+    interface HubPort extends MediaElement {
+     id : string;
+    }
 
-export interface Hub extends MediaObject {
-    createHubPort() : Promise<HubPort>;
-}
+    interface Hub extends MediaObject {
+        createHubPort() : Promise<HubPort>;
+    }
 
-export interface AlphaBlending extends Hub {
-    setMaster(port:string, zOrder:int) : Promise<void>;
+    interface AlphaBlending extends Hub {
+        setMaster(port:string, zOrder:Number) : Promise<void>;
+    }
 }
 
 declare const kurento: kurento.Constructor;
