@@ -32,6 +32,7 @@ declare namespace kurento {
         create(type: 'RecorderEndpoint', options: RecorderEndpointOptions): Promise<RecorderEndpoint>;
         create(type: 'WebRtcEndpoint'): Promise<WebRtcEndpoint>;
         create(type: 'AlphaBlending'): Promise<AlphaBlending>;
+        create(type: 'PlayerEndpoint', params? : Object): Promise<PlayerEndpoint>;
         on(event: 'OnIceCandidate', callback: (event: IceCandidateEvent) => void): void;
         on(event: 'Error', callback: (error: Error) => void): void;
         on(event: 'Recording' | 'Paused' | 'Stopped', callback: () => void): void;
@@ -89,6 +90,10 @@ declare namespace kurento {
         getMinOutputBitrate: (callback?: Callback<number>) => Promise<number>;
         setMaxOutputBitrate: (bitrate: number, callback?: Callback<number>) => Promise<number>;
         setMinOutputBitrate: (bitrate: number, callback?: Callback<number>) => Promise<number>;
+    }
+
+    interface PlayerEndpoint extends ClientInstance, MediaElement, MediaObject {
+
     }
 
     interface SdpEndpoint {
