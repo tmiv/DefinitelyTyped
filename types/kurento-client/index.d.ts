@@ -195,12 +195,13 @@ declare namespace kurento {
      id : string;
     }
 
-    interface Hub extends MediaObject {
+    interface Hub extends MediaObject, MediaElement, ClientInstance {
         createHubPort() : Promise<HubPort>;
     }
 
     interface AlphaBlending extends Hub {
         setMaster(port:string, zOrder:Number) : Promise<void>;
+        setPortProperties(relativeX : Number, relativeY : Number, zOrder : Number, relativeWidth : Number, relativeHeight : Number, port : string) : Promise<void>;
     }
 }
 
