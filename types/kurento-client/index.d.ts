@@ -33,6 +33,7 @@ declare namespace kurento {
         create(type: 'WebRtcEndpoint'): Promise<WebRtcEndpoint>;
         create(type: 'AlphaBlending'): Promise<AlphaBlending>;
         create(type: 'PlayerEndpoint', params? : Object): Promise<PlayerEndpoint>;
+        create(type: 'DispatcherOneToMany'): Promise<DispatcherOneToMany>;
         on(event: 'OnIceCandidate', callback: (event: IceCandidateEvent) => void): void;
         on(event: 'Error', callback: (error: Error) => void): void;
         on(event: 'Recording' | 'Paused' | 'Stopped', callback: () => void): void;
@@ -93,7 +94,14 @@ declare namespace kurento {
     }
 
     interface PlayerEndpoint extends ClientInstance, MediaElement, MediaObject {
+        play: () => Promise<void>;
+        stop: () => Promise<void>;
+        pause: () => Promise<void>;
+    }
 
+    interface DispatcherOneToMany extends Hub {
+        setSource : ( port:id ) => Promise<void>;
+        removeSource : () => Promise<void>;
     }
 
     interface SdpEndpoint {
