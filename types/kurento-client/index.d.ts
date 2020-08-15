@@ -192,7 +192,7 @@ declare namespace kurento {
     type Callback<T> = (error: Error, result: T) => void;
 
     interface HubPort extends MediaElement {
-     id : string;
+        id : string;
     }
 
     interface Hub extends MediaObject, MediaElement, ClientInstance {
